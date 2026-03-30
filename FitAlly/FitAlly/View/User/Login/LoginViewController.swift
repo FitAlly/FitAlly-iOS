@@ -178,6 +178,14 @@ class LoginViewController: UIViewController, DesiginProtocol {
                 self?.toggleLoginMode()
             })
             .disposed(by: disposeBag)
+            
+        emailSignUpButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let joinVC = JoinViewController()
+                joinVC.modalPresentationStyle = .fullScreen
+                self?.present(joinVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func toggleLoginMode() {
@@ -381,10 +389,4 @@ class LoginViewController: UIViewController, DesiginProtocol {
     }
 }
 
-extension UITextField {
-    func setLeftPaddingPoints(_ amount:CGFloat){
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: amount, height: self.frame.size.height))
-        self.leftView = paddingView
-        self.leftViewMode = .always
-    }
-}
+
