@@ -21,6 +21,12 @@ class JoinViewController: UIViewController {
         $0.tintColor = .white
     }
     
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+    }
+    
+    private let contentView = UIView()
+    
     private let containerView = UIView().then {
         $0.backgroundColor = UIColor(white: 0.1, alpha: 1.0)
         $0.layer.cornerRadius = 24
@@ -40,7 +46,7 @@ class JoinViewController: UIViewController {
     
     private let profileImageContainer = UIView().then {
         $0.backgroundColor = UIColor(white: 0.15, alpha: 1.0)
-        $0.layer.cornerRadius = 45
+        $0.layer.cornerRadius = 40
         
         let uploadIcon = UIImageView(image: UIImage(systemName: "square.and.arrow.up")).then {
             $0.tintColor = .systemGray
@@ -49,7 +55,7 @@ class JoinViewController: UIViewController {
         $0.addSubview(uploadIcon)
         uploadIcon.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.size.equalTo(24)
+            make.size.equalTo(20)
         }
     }
     
@@ -96,7 +102,19 @@ class JoinViewController: UIViewController {
         $0.locale = Locale(identifier: "ko_KR")
     }
     
-    private lazy var emailLabel = createLabel(text: "이메일 *")
+    private lazy var phoneLabel = createLabel(text: "휴대폰 번호")
+    private lazy var phoneTextField = createTextField(placeholder: "휴대폰 번호를 입력하세요").then {
+        $0.keyboardType = .numberPad
+    }
+    private let adultVerifyButton = UIButton().then {
+        $0.setTitle("성인인증", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
+        $0.backgroundColor = UIColor(named: "#00D3F3")
+        $0.layer.cornerRadius = 12
+        $0.titleLabel?.font = .systemFont(ofSize: 13, weight: .bold)
+    }
+    
+    private lazy var emailLabel = createLabel(text: "이메일")
     private lazy var emailTextField = createTextField(placeholder: "example@email.com")
     private let verifyButton = UIButton().then {
         $0.setTitle("인증", for: .normal)
@@ -106,12 +124,12 @@ class JoinViewController: UIViewController {
         $0.titleLabel?.font = .systemFont(ofSize: 13, weight: .bold)
     }
     
-    private lazy var passwordLabel = createLabel(text: "비밀번호 *")
+    private lazy var passwordLabel = createLabel(text: "비밀번호")
     private lazy var passwordTextField = createTextField(placeholder: "비밀번호를 입력하세요").then {
         $0.isSecureTextEntry = true
     }
     
-    private lazy var confirmPasswordLabel = createLabel(text: "비밀번호 재확인 *")
+    private lazy var confirmPasswordLabel = createLabel(text: "비밀번호 재확인")
     private lazy var confirmPasswordTextField = createTextField(placeholder: "비밀번호를 다시 입력하세요").then {
         $0.isSecureTextEntry = true
     }
@@ -135,7 +153,9 @@ class JoinViewController: UIViewController {
         view.backgroundColor = .black
         
         view.addSubview(backButton)
-        view.addSubview(containerView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(containerView)
         
         containerView.addSubview(titleLabel)
         containerView.addSubview(subTitleLabel)
@@ -146,6 +166,11 @@ class JoinViewController: UIViewController {
         containerView.addSubview(nicknameTextField)
         containerView.addSubview(birthLabel)
         containerView.addSubview(birthTextField)
+        
+        containerView.addSubview(phoneLabel)
+        containerView.addSubview(phoneTextField)
+        containerView.addSubview(adultVerifyButton)
+        
         containerView.addSubview(emailLabel)
         containerView.addSubview(emailTextField)
         containerView.addSubview(verifyButton)
@@ -161,10 +186,20 @@ class JoinViewController: UIViewController {
             make.size.equalTo(40)
         }
         
-        containerView.snp.makeConstraints { make in
+        scrollView.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom).offset(10)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
+        containerView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(24)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.bottom.equalToSuperview().offset(-20)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -181,7 +216,7 @@ class JoinViewController: UIViewController {
         profileImageContainer.snp.makeConstraints { make in
             make.top.equalTo(subTitleLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
-            make.size.equalTo(90)
+            make.size.equalTo(80)
         }
         
         profileUploadButton.snp.makeConstraints { make in
@@ -211,8 +246,27 @@ class JoinViewController: UIViewController {
             make.height.equalTo(42)
         }
         
-        emailLabel.snp.makeConstraints { make in
+        phoneLabel.snp.makeConstraints { make in
             make.top.equalTo(birthTextField.snp.bottom).offset(12)
+            make.leading.equalToSuperview().offset(24)
+        }
+        
+        adultVerifyButton.snp.makeConstraints { make in
+            make.top.equalTo(phoneLabel.snp.bottom).offset(6)
+            make.trailing.equalToSuperview().inset(24)
+            make.width.equalTo(70)
+            make.height.equalTo(42)
+        }
+        
+        phoneTextField.snp.makeConstraints { make in
+            make.top.equalTo(adultVerifyButton)
+            make.leading.equalToSuperview().offset(24)
+            make.trailing.equalTo(adultVerifyButton.snp.leading).offset(-10)
+            make.height.equalTo(42)
+        }
+        
+        emailLabel.snp.makeConstraints { make in
+            make.top.equalTo(phoneTextField.snp.bottom).offset(12)
             make.leading.equalToSuperview().offset(24)
         }
         
@@ -256,7 +310,7 @@ class JoinViewController: UIViewController {
             make.top.equalTo(confirmPasswordTextField.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.equalTo(50)
-            make.bottom.lessThanOrEqualToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-30) // Important for scrollView height
         }
     }
     
