@@ -186,6 +186,14 @@ class LoginViewController: UIViewController, DesiginProtocol {
                 self?.present(joinVC, animated: true)
             })
             .disposed(by: disposeBag)
+            
+        findPwButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let findVC = PasswordFindViewController()
+                findVC.modalPresentationStyle = .fullScreen
+                self?.present(findVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func toggleLoginMode() {

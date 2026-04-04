@@ -338,6 +338,14 @@ class JoinViewController: UIViewController {
                 self?.dismiss(animated: true)
             })
             .disposed(by: disposeBag)
+            
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let purposeVC = PurposeViewController()
+                purposeVC.modalPresentationStyle = .fullScreen
+                self?.present(purposeVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }
 
