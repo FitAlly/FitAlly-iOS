@@ -194,6 +194,14 @@ class LoginViewController: UIViewController, DesiginProtocol {
                 self?.present(findVC, animated: true)
             })
             .disposed(by: disposeBag)
+
+        loginButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let exerciseVC = ExerciseViewController()
+                exerciseVC.modalPresentationStyle = .fullScreen
+                self?.present(exerciseVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func toggleLoginMode() {
