@@ -142,6 +142,15 @@ class RoutineAddViewController: UIViewController, DesiginProtocol {
                 self?.present(customRoutineVC, animated: true)
             })
             .disposed(by: disposeBag)
+
+        aiRoutineCard.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let aiRoutineVC = AIRoutineViewController()
+                aiRoutineVC.modalPresentationStyle = .overFullScreen
+                aiRoutineVC.modalTransitionStyle = .crossDissolve
+                self?.present(aiRoutineVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Helper Methods
