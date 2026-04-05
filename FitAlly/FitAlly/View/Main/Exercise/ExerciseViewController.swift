@@ -162,6 +162,15 @@ class ExerciseViewController: UIViewController, DesiginProtocol {
         fabButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20); make.bottom.equalTo(customTabBar.snp.top).offset(-20); make.size.equalTo(56)
         }
+        
+        fabButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                let routineAddVC = RoutineAddViewController()
+                routineAddVC.modalPresentationStyle = .overFullScreen
+                routineAddVC.modalTransitionStyle = .crossDissolve
+                self?.present(routineAddVC, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Section Creators
@@ -260,7 +269,7 @@ class ExerciseViewController: UIViewController, DesiginProtocol {
         
         let brandCyan = UIColor(named: "#00D3F3") ?? .cyan
         
-        let sectionBox = UIView().then { 
+        let sectionBox = UIView().then {
             $0.layer.cornerRadius = 24
             $0.layer.borderWidth = 1
             $0.layer.borderColor = brandCyan.withAlphaComponent(0.3).cgColor // Figma 30%
@@ -287,11 +296,11 @@ class ExerciseViewController: UIViewController, DesiginProtocol {
     }
     
     private func createAICard(title: String, exercises: [(String, String)], isLeg: Bool = false) -> UIView {
-        let card = UIView().then { 
+        let card = UIView().then {
             $0.backgroundColor = UIColor.black.withAlphaComponent(0.5) // Figma Black 50%
             $0.layer.cornerRadius = 20
             $0.layer.borderWidth = 1
-            $0.layer.borderColor = UIColor.white.withAlphaComponent(0.1).cgColor 
+            $0.layer.borderColor = UIColor.white.withAlphaComponent(0.1).cgColor
         }
         let tLb = UILabel().then { $0.text = title; $0.font = .systemFont(ofSize: 18, weight: .bold); $0.textColor = .white }
         let badge = UILabel().then { $0.text = "추천"; $0.font = .systemFont(ofSize: 12, weight: .bold); $0.textColor = .black; $0.backgroundColor = UIColor(named: "#00D3F3"); $0.layer.cornerRadius = 11; $0.clipsToBounds = true; $0.textAlignment = .center }
@@ -319,23 +328,23 @@ class ExerciseViewController: UIViewController, DesiginProtocol {
         let btnStack = UIStackView().then { $0.axis = .horizontal; $0.spacing = 12; $0.distribution = .fillEqually }
         card.addSubview(btnStack); btnStack.snp.makeConstraints { make in make.top.equalTo(list.snp.bottom).offset(20); make.leading.trailing.bottom.equalToSuperview().inset(20); make.height.equalTo(48) }
         
-        let save = UIButton().then { 
+        let save = UIButton().then {
             $0.backgroundColor = UIColor.black.withAlphaComponent(0.2) // Figma Black 20%
             $0.layer.cornerRadius = 12
             $0.setTitle("  저장됨", for: .normal)
             $0.setTitleColor(.white, for: .normal)
             $0.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
             $0.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
-            $0.tintColor = .gray 
+            $0.tintColor = .gray
         }
-        let start = UIButton().then { 
+        let start = UIButton().then {
             $0.backgroundColor = UIColor(named: "#00D3F3")
             $0.layer.cornerRadius = 12
             $0.setTitle("  시작하기", for: .normal)
             $0.setTitleColor(.black, for: .normal)
             $0.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
             $0.setImage(UIImage(systemName: "play.fill"), for: .normal)
-            $0.tintColor = .black 
+            $0.tintColor = .black
         }
         btnStack.addArrangedSubview(save); btnStack.addArrangedSubview(start)
         return card
